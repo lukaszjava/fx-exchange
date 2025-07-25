@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fx
+    username: fx
+    password: fx
+  flyway:
+    enabled: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 3000
+
+nbp:
+  api-url: https://api.nbp.pl
+
+resilience4j:
+  retry:
+    instances:
+      nbpRate:
+        max-attempts: 3
+        wait-duration: 500ms
+  circuitbreaker:
+    instances:
+      nbpRate:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
+
+rate-limit:
+  capacity: 100
+  refill: 100
+  window: PT1M
